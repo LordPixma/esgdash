@@ -1,0 +1,20 @@
+name = "esgdash-api"
+main = "src/index.ts"
+compatibility_date = "2023-12-18"
+
+[build]
+command = "npm run build"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-kv-namespace-id"
+
+[[r2_buckets]]
+binding = "DATA_STORAGE"
+bucket_name = "esgdash-data"
+preview_bucket_name = "esgdash-data-preview"
+
+[vars]
+FRED_API_KEY = ""
+CACHE_TTL_HOURS = "24"
