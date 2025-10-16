@@ -1,0 +1,22 @@
+{
+  "name": "esgdash",
+  "version": "1.0.0",
+  "description": "ESG, macroeconomic & risk analytics accessible to everyone through a Cloudflare-native SaaS platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "deploy": "npm run deploy --workspaces --if-present"
+  },
+  "keywords": ["ESG", "analytics", "cloudflare", "dashboard"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,24 @@
+name = "esgdash-api"
+main = "src/index.ts"
+compatibility_date = "2023-12-18"
+
+[build]
+command = "npm run build"
+
+# KV namespace for caching (optional - will use in-memory cache if not configured)
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "your-kv-namespace-id"
+# preview_id = "your-preview-kv-namespace-id"
+
+# R2 bucket for data storage (optional)
+# [[r2_buckets]]
+# binding = "DATA_STORAGE"
+# bucket_name = "esgdash-data"
+# preview_bucket_name = "esgdash-data-preview"
+
+[vars]
+# Add your FRED API key here or in .dev.vars for development
+# Leave empty to use demo/mock data
+FRED_API_KEY = ""
+CACHE_TTL_HOURS = "24"
