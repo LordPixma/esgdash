@@ -1,5 +1,6 @@
 import { buildUrl, FredObservationsResponse, FredSeriesResponse } from '@esgdash/shared';
 import { Env, getCachedData } from './cache';
+import { getMockFredData } from './mock-data';
 
 const FRED_BASE_URL = 'https://api.stlouisfed.org/fred';
 
@@ -71,29 +72,41 @@ export async function handleFredSeriesRequest(
     );
   }
 
-  if (!env.FRED_API_KEY) {
-    return new Response(
-      JSON.stringify({ success: false, error: 'FRED API key not configured' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+  // Use mock data if API key is not configured
+  const useMockData = !env.FRED_API_KEY || env.FRED_API_KEY === '';
+  
+  if (useMockData) {
+    console.log('Using mock data for FRED (no API key configured)');
   }
 
   try {
     const cacheKey = `fred:${seriesId}:${startDate || 'all'}:${endDate || 'all'}`;
     const ttlHours = parseInt(env.CACHE_TTL_HOURS || '24');
 
-    const { data, cached } = await getCachedData(
-      env.CACHE,
-      cacheKey,
-      () => fetchFredObservations(seriesId, env.FRED_API_KEY, startDate || undefined, endDate || undefined),
-      ttlHours
-    );
+    let data;
+    let cached = false;
+
+    if (useMockData) {
+      // Return mock data in demo mode
+      data = getMockFredData(seriesId);
+    } else {
+      // Use real API with caching
+      const result = await getCachedData(
+        env.CACHE,
+        cacheKey,
+        () => fetchFredObservations(seriesId, env.FRED_API_KEY!, startDate || undefined, endDate || undefined),
+        ttlHours
+      );
+      data = result.data;
+      cached = result.cached;
+    }
 
     return new Response(
       JSON.stringify({
         success: true,
         data,
         cached,
+        demo: useMockData,
         timestamp: new Date().toISOString(),
       }),
       {

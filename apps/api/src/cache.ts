@@ -1,21 +1,27 @@
 import { ApiResponse, CacheEntry, getCacheExpiration, isCacheExpired } from '@esgdash/shared';
 
 export interface Env {
-  CACHE: KVNamespace;
-  DATA_STORAGE: R2Bucket;
-  FRED_API_KEY: string;
-  CACHE_TTL_HOURS: string;
+  CACHE?: KVNamespace;
+  DATA_STORAGE?: R2Bucket;
+  FRED_API_KEY?: string;
+  CACHE_TTL_HOURS?: string;
 }
 
 /**
  * Get data from cache or fetch from source
  */
 export async function getCachedData<T>(
-  cache: KVNamespace,
+  cache: KVNamespace | undefined,
   key: string,
   fetcher: () => Promise<T>,
   ttlHours: number = 24
 ): Promise<{ data: T; cached: boolean }> {
+  // If no cache available, fetch directly
+  if (!cache) {
+    const data = await fetcher();
+    return { data, cached: false };
+  }
+
   // Try to get from cache
   const cached = await cache.get<CacheEntry<T>>(key, 'json');
   

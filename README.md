@@ -56,6 +56,8 @@ esgdash/
 
 ## Getting Started
 
+**New to ESGDash?** Check out our [Quickstart Guide](QUICKSTART.md) to get running in under 5 minutes!
+
 ### Prerequisites
 
 - Node.js 18+ and npm
@@ -135,6 +137,8 @@ Parameters:
 
 ## Deployment
 
+Ready to deploy to production? See our comprehensive [Deployment Guide](DEPLOYMENT.md).
+
 ### Deploying the API (Cloudflare Workers)
 
 1. Configure wrangler.toml with your account details
@@ -185,6 +189,12 @@ Or connect your GitHub repository to Cloudflare Pages for automatic deployments.
 - **FRED (Federal Reserve Economic Data)**: Economic indicators, GDP, unemployment, inflation, etc.
 - **World Bank Open Data**: Global development indicators, ESG metrics, demographic data
 - **OECD** (Extensible): Additional economic and social indicators
+
+## Documentation
+
+- **[Quickstart Guide](QUICKSTART.md)** - Get started in 5 minutes
+- **[Development Guide](DEVELOPMENT.md)** - Detailed development documentation
+- **[Deployment Guide](DEPLOYMENT.md)** - Production deployment instructions
 
 ## Contributing
 

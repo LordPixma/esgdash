@@ -1,5 +1,6 @@
 import { buildUrl } from '@esgdash/shared';
 import { Env, getCachedData } from './cache';
+import { getMockWorldBankData } from './mock-data';
 
 const WORLDBANK_BASE_URL = 'https://api.worldbank.org/v2';
 
@@ -56,22 +57,41 @@ export async function handleWorldBankRequest(
     );
   }
 
+  // Use mock data if API key is not configured (World Bank doesn't require key but may be unavailable)
+  const useMockData = !env.FRED_API_KEY || env.FRED_API_KEY === '';
+
+  if (useMockData) {
+    console.log('Using mock data for World Bank (demo mode)');
+  }
+
   try {
     const cacheKey = `worldbank:${indicatorId}:${countryCode}:${startDate || 'all'}:${endDate || 'all'}`;
     const ttlHours = parseInt(env.CACHE_TTL_HOURS || '24');
 
-    const { data, cached } = await getCachedData(
-      env.CACHE,
-      cacheKey,
-      () => fetchWorldBankIndicator(indicatorId, countryCode, startDate || undefined, endDate || undefined),
-      ttlHours
-    );
+    let data;
+    let cached = false;
+
+    if (useMockData) {
+      // Return mock data in demo mode
+      data = getMockWorldBankData(indicatorId);
+    } else {
+      // Use real API with caching
+      const result = await getCachedData(
+        env.CACHE,
+        cacheKey,
+        () => fetchWorldBankIndicator(indicatorId, countryCode, startDate || undefined, endDate || undefined),
+        ttlHours
+      );
+      data = result.data;
+      cached = result.cached;
+    }
 
     return new Response(
       JSON.stringify({
         success: true,
         data,
         cached,
+        demo: useMockData,
         timestamp: new Date().toISOString(),
       }),
       {
